@@ -1,6 +1,7 @@
 """Models for movie ratings app."""
 
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -46,8 +47,8 @@ class Movie(db.Model):
                         primary_key=True)
     title = db.Column(db.String)
     overview = db.Column(db.Text)
-    release_date = (db.DateTime)
-    poster_path = (db.String)
+    release_date = db.Column(db.DateTime)
+    poster_path = db.Column(db.String)
 
     ratings = db.relationship("Rating", back_populates='movie')
     
@@ -76,9 +77,25 @@ class Rating(db.Model):
 
 if __name__ == "__main__":
     from server import app
+    import os
 
-    # Call connect_to_db(app, echo=False) if your program output gets
-    # too annoying; this will tell SQLAlchemy not to print out every
-    # query it executes.
+    os.system("dropdb ratings --if-exists")
+    os.system("createdb ratings")
 
     connect_to_db(app)
+    
+    # Make our tables)
+    db.create_all()    
+
+    user1 = User(email='test@test.com', password='test')
+    user2 = User(email='test2@test2.com', password='test2')
+    
+    movie1 = Movie(title='title1', overview='a basic overview', release_date=datetime.now(), poster_path='/basicbath.html')
+    movie2 = Movie(title='Movie2', overview='overview2', release_date=datetime.now(), poster_path='path.html')
+
+    # movies = Movie.query.all()
+
+    rating1 = Rating(score=1, movie=movie1, user=user1)
+
+    db.session.add_all([user1, user2, movie1, movie2, rating1])
+    db.session.commit()
