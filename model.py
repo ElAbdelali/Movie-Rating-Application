@@ -29,6 +29,8 @@ class User(db.Model):
                         primary_key=True)
     email = db.Column(db.String, unique=True)
     password = db.Column(db.String)
+    
+    ratings = db.relationship("Rating", back_populates="user")
 
     def __repr__(self):
         return f'<User user_id={self.user_id} email={self.email}>'
@@ -47,6 +49,8 @@ class Movie(db.Model):
     release_date = (db.DateTime)
     poster_path = (db.String)
 
+    ratings = db.relationship("Rating", back_populates='movie')
+    
     def __repr__(self):
         return f'<Movie movie_id={self.movie_id} title={self.title}>'
 
