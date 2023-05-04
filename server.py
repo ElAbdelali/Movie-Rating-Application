@@ -38,6 +38,21 @@ def users():
     user_list = crud.retrieve_users()
     return render_template('all_users.html', users=user_list)
 
+@app.route('/users', methods=['POST'])
+def users_post():
+    email = request.form['email']
+    password = request.form['password']
+
+    user_by_email = crud.get_user_by_email(email)
+
+    if (user_by_email):
+        flash('Email already exists.')
+    else:
+        flash('Account created')
+        crud.create_account(email, password)
+
+    return redirect('/')
+
 @app.route('/users/<user_id>')
 def user_detail(user_id):
     """View user details"""
